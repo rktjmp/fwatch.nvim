@@ -17,20 +17,23 @@ local function watch_with_function(path, on_event, on_error, opts)
     recursive = false -- true = watch dirs inside dirs
   }
 
-  local callback = function(err, filename, events)
-    local remain_attached
+  local unwatch_cb = function()
+    uv.fs_event_stop(handle)
+  end
+
+  local event_cb = function(err, filename, events)
     if err then
-      remain_attached = on_error(error)
+      on_error(error, unwatch_cb)
     else
-      remain_attached = on_event(filename, events)
+      on_event(filename, events, unwatch_cb)
     end
-    if opts.is_oneshot or remain_attached == false then
-      uv.fs_event_stop(handle)
+    if opts.is_oneshot then
+      unwatch_cb()
     end
   end
 
   -- attach handler
-  uv.fs_event_start(handle, path, flags, callback)
+  uv.fs_event_start(handle, path, flags, event_cb)
 
   return handle
 end
