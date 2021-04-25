@@ -4,6 +4,8 @@
 
 Watch files for changes and execute vim commands or lua functions.
 
+**Needs inotify (probably). Doesn't notice '$ touch file' (probably). Doesn't work on windows (probably).**
+
 ## Usage
 
 Paths are relative to your current working dir and are not expanded ("\~/file" will *not* work).
