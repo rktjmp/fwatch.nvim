@@ -1,5 +1,12 @@
 local uv = vim.loop
 
+local make_default_error_cb = function(path, runnable)
+  return function(error, _)
+    error("fwatch.watch("..path..", "..runnable..")" ..
+     "encountered an error: "..error)
+  end
+end
+
 -- @doc """
 -- Watch path and calls on_event(filename, events) or on_error(error)
 --
@@ -46,26 +53,12 @@ end
 --
 -- """
 local function watch_with_string(path, string, opts)
-  -- just run the command and reattach
   local on_event = function(_, _)
     vim.schedule(function()
       vim.cmd(string)
     end)
-
-    -- may not re-attach if opts.is_oneshot = true
-    return true
   end
-
-  -- log the error and reattach
-  local on_error = function(error)
-    error("fwatch with with command: " .. string .. " encounterd an error: " .. error)
-
-    -- always re-attach error so it's noticed
-    -- may not re-attach if opts.is_oneshot = true
-    return true
-  end
-
-  -- delegate out
+  local on_error = make_default_error_cb(path, string)
   return watch_with_function(path, on_event, on_error, opts)
 end
 
@@ -76,9 +69,22 @@ local function do_watch(path, runnable, opts)
   if type(runnable) == "string" then
     return watch_with_string(path, runnable, opts)
   elseif type(runnable) == "table" then
-    assert(runnable.on_event, "must provide on_event to watch")
-    assert(runnable.on_error, "must provide on_error to watch")
-    return watch_with_function(path, runnable.on_event, runnable.on_error, opts)
+    assert(runnable.on_event,
+     "must provide on_event to watch")
+    assert(type(runnable.on_event) == "function",
+      "on_event must be a function")
+
+    -- no on_error provided, make defalut
+    if runnable.on_error == nil then
+      table.on_error = make_default_error_cb(path, "on_event_cb")
+    end
+
+    return watch_with_function(
+     path,
+     runnable.on_event,
+     runnable.on_error,
+     opts
+    )
   else
     error("Unknown runnable type given to watch," ..
       " must be string or {on_event = function, on_error = function}.")
@@ -86,16 +92,19 @@ local function do_watch(path, runnable, opts)
 end
 
 M = {
-  watch = function (path, runnable)
-    return do_watch(path, runnable, {
+  -- create watcher
+  watch = function (path, vim_command_or_callback_table)
+    return do_watch(path, vim_command_or_callback_table, {
       is_oneshot = false
     })
   end,
+  -- stop watcher
   unwatch = function (handle)
     return uv.fs_event_stop(handle)
   end,
-  once = function (path, runnable)
-    return do_watch(path, runnable, {
+  -- create watcher that auto stops
+  once = function (path, vim_command_or_callback_table)
+    return do_watch(path, vim_command_or_callback_table, {
       is_oneshot = true
     })
   end
