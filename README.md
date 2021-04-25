@@ -4,7 +4,9 @@
 
 Watch files for changes and execute vim commands or lua functions.
 
-**Needs inotify (probably). Doesn't notice '$ touch file' (probably). Doesn't work on windows (probably).**
+**Needs inotify (probably). Doesn't work on windows (probably).**
+
+**Watching a file you edit with vim will likely detatch your watcher because vim swaps files around on save. https://unix.stackexchange.com/questions/188873/using-inotifywait-along-with-vim**
 
 ## Usage
 
@@ -29,17 +31,22 @@ handle_b = fwatch.watch("my_other_path.txt", {
       pirint(filename .. " had some other event that libuv cant explain")
     end
 
+    -- !!! Very important you return true unless you want to stop watching !!!
     -- remain attached
     return true
   end,
   on_error = function(error)
     print(error)
 
-    -- detatch
+    -- detatch this watcher
     return false
   end
 })
 
+-- you can also use once, which will only fire ~~twice~~ once.
+fwatch.once("my_path.txt", command_string_or_function_set)
+
+-- maybe you want to stop watching but can't know that in the callback
 fwatch.unwatch(handle_a)
 fwatch.unwatch(handle_b)
 ```
