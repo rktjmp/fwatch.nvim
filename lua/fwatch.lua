@@ -5,27 +5,39 @@ local M = {}
 
 -- watches path and calls on_event(filename, events) or on_error(error)
 local function watch_with_function(path, on_event, on_error)
-  local fs_event = uv.new_fs_event()
   -- check for 'fail', what is 'fail'?
+  local handle = uv.new_fs_event()
+
+  -- these are all default
   local flags = {
     watch_entry = false,
     stat = false,
     recursive = false
   }
 
-  uv.fs_event_start(fs_event, path, flags, function(err, filename, events)
+  -- attach handler
+  uv.fs_event_start(handle, path, flags, function(err, filename, events)
     if err then
-      on_error(error)
+      local remain_attached = on_error(error)
+      if not remain_attached then
+        uv.fs_event_stop(handle)
+      end
     else
-      on_event(filename, events)
+      local remain_attached = on_event(filename, events)
+      if not remain_attached then
+        uv.fs_event_stop(handle)
+      end
     end
   end)
 
+  return handle
 end
 
 local function watch_with_string(path, string)
-  local on_event = function(filename, events)
-    print(string)
+  local on_event = function(_, _)
+    vim.schedule(function()
+      vim.cmd(string)
+    end)
   end
   local on_error = function(error)
     print("fwatch with with command: " .. string .. " encounterd an error: " .. error)
@@ -46,6 +58,16 @@ local function watch(path, runnable)
   end
 end
 
+local function unwatch(handle)
+  uv.fs_event_stop(handle)
+end
+
+-- local function once(path, runnable)
+--   local handle = watch(path, runnable)
+-- end
+
 return {
-  watch = watch
+  watch = watch,
+  -- once = once,
+  unwatch = unwatch
 }
