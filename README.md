@@ -13,8 +13,6 @@ fwatch.watch("b_file", {
 })
 ```
 
-[See artwork](#artwork)
-
 ## Requirements
 
 - Neovim
@@ -179,4 +177,5 @@ You could call `unwatch()` in every callback and re-call `fwatch.watch()` with t
 ## Maybe
 
 `:Fwatchers` - show list of watchers?
+
 `:Fwatch "path" "command"` ?
