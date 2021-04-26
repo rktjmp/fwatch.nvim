@@ -46,11 +46,9 @@ Requirements                                                 *fwatch-requirement
 Installation                                                 *fwatch-installation*
 
 Install via any package managment system:
-
-```vim
-make_pact 'rktjmp/fwatch.nvim'
-```
-
+>
+  make_pact 'rktjmp/fwatch.nvim'
+<
 --------------------------------------------------------------------------------
 Usage                                                               *fwatch-usage*
 
@@ -139,15 +137,15 @@ Called when the watched `path` changes. `on_event` is passed:
 
 filename :: string
 
-  filename is the name of the changed file.
+  `filename` is the name of the changed file.
 
 events :: {change :: boolean, rename :: boolean}
 
-  events describes what type of change occured.
+  `events` describes what type of change occured.
 
 unwatch_cb :: function
 
-  unwatch_cb` will detatch the watcher when called.
+  `unwatch_cb` will detatch the watcher when called.
 
 on_error                                                   *fwatch-watch-on_error*
 
