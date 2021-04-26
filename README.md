@@ -1,15 +1,8 @@
 # fwatch.nvim
 
-```
-  /$$$$$$                           /$$               /$$
- /$$__  $$                         | $$              | $$
-| $$  \__//$$  /$$  /$$  /$$$$$$  /$$$$$$    /$$$$$$$| $$$$$$$
-| $$$$   | $$ | $$ | $$ |____  $$|_  $$_/   /$$_____/| $$__  $$
-| $$_/   | $$ | $$ | $$  /$$$$$$$  | $$    | $$      | $$  \ $$
-| $$     | $$ | $$ | $$ /$$__  $$  | $$ /$$| $$      | $$  | $$
-| $$     |  $$$$$/$$$$/|  $$$$$$$  |  $$$$/|  $$$$$$$| $$  | $$
-|__/      \_____/\___/  \_______/   \___/   \_______/|__/  |__/
-````
+![](images/logo.png)
+
+[See artwork note.](#artwork)
 
 `fwatch.nvim` lets you watch files or directories for changes and then run vim commands or lua functions.
 
@@ -21,8 +14,6 @@ fwatch.watch("b_file", {
   end
 })
 ```
-
-[See artwork](#artwork)
 
 ## Requirements
 
