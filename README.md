@@ -179,3 +179,7 @@ You could call `unwatch()` in every callback and re-call `fwatch.watch()` with t
 `:Fwatchers` - show list of watchers?
 
 `:Fwatch "path" "command"` ?
+
+## Artwork
+
+GH image is a play on the cover art for the fantastic game [Firewatch](http://www.firewatchgame.com/) by the brilliant team of [Campo Santo](https://www.camposanto.com/), orignal art at least partly by the talented [Olly Moss](http://ollymoss.com/).
