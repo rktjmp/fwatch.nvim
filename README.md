@@ -13,6 +13,8 @@ fwatch.watch("b_file", {
 })
 ```
 
+The code is extremely simple and [I encourage you to read the source](https://github.com/rktjmp/fwatch.nvim/blob/main/lua/fwatch.lua), as you may not require a "plugin" to achieve your goals. `fwatch.nvim` may just act as some example code for you.
+
 ## Requirements
 
 - Neovim
