@@ -14,7 +14,8 @@ end
 --  is_oneshot -> don't reattach after running, no matter the return value
 -- """
 local function watch_with_function(path, on_event, on_error, opts)
-  -- TODO: check for 'fail', what is 'fail'?
+  -- TODO: Check for 'fail'? What is 'fail' in the context of handle creation?
+  --       Probably everything else is on fire anyway (or no inotify/etc?).
   local handle = uv.new_fs_event()
 
   -- these are just the default values
@@ -74,7 +75,7 @@ local function do_watch(path, runnable, opts)
     assert(type(runnable.on_event) == "function",
       "on_event must be a function")
 
-    -- no on_error provided, make defalut
+    -- no on_error provided, make default
     if runnable.on_error == nil then
       table.on_error = make_default_error_cb(path, "on_event_cb")
     end
